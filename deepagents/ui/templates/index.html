@@ -1,0 +1,188 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Deep Agents</title>
+    <link rel="stylesheet" href="/static/css/style.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+</head>
+<body>
+    <div class="app-container">
+        <!-- Header -->
+        <header class="app-header">
+            <div class="header-content">
+                <div class="header-left">
+                    <div class="logo-container">
+                        <svg class="logo-icon" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M12 2L2 7l10 5 10-5-10-5z"></path>
+                            <path d="M2 17l10 5 10-5"></path>
+                            <path d="M2 12l10 5 10-5"></path>
+                        </svg>
+                        <h1 class="app-title">Deep Agents</h1>
+                    </div>
+                </div>
+                <div class="header-right">
+                    <button id="newChatBtn" class="icon-button" aria-label="New Chat">
+                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <line x1="12" y1="5" x2="12" y2="19"></line>
+                            <line x1="5" y1="12" x2="19" y2="12"></line>
+                        </svg>
+                    </button>
+                    <button id="settingsBtn" class="icon-button" aria-label="Settings">
+                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <circle cx="12" cy="12" r="3"></circle>
+                            <path d="M12 1v6m0 6v6m-9-9h6m6 0h6"></path>
+                        </svg>
+                    </button>
+                </div>
+            </div>
+        </header>
+
+        <!-- Main Layout -->
+        <div class="main-layout">
+            <!-- Left Sidebar - Conversation History -->
+            <aside class="conversations-sidebar">
+                <div class="conversation-item active" data-thread-id="current">
+                    <div class="conversation-icon">
+                        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"></path>
+                        </svg>
+                    </div>
+                </div>
+            </aside>
+
+            <!-- Chat Area -->
+            <div class="chat-area">
+                <div id="chatMessages" class="messages-container"></div>
+                
+                <div class="input-container">
+                    <div class="input-wrapper">
+                        <textarea 
+                            id="chatInput" 
+                            class="message-input"
+                            placeholder="Type your message..."
+                            rows="1"
+                        ></textarea>
+                        <button id="sendBtn" class="send-button" aria-label="Send message">
+                            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                <line x1="22" y1="2" x2="11" y2="13"></line>
+                                <polygon points="22 2 15 22 11 13 2 9 22 2"></polygon>
+                            </svg>
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Right Sidebar - Files & Tasks -->
+            <aside class="state-sidebar">
+                <!-- Files Section -->
+                <div class="state-section">
+                    <div class="state-header">
+                        <h2 class="state-title">Files</h2>
+                        <span id="fileCount" class="state-badge">0</span>
+                    </div>
+                    <div id="filesList" class="state-content">
+                        <div class="empty-state">
+                            <p class="empty-text">No files yet</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Tasks Section -->
+                <div class="state-section">
+                    <div class="state-header">
+                        <h2 class="state-title">Tasks</h2>
+                        <span id="todoCount" class="state-badge">0</span>
+                    </div>
+                    <div id="todosList" class="state-content">
+                        <div class="empty-state">
+                            <p class="empty-text">No tasks yet</p>
+                        </div>
+                    </div>
+                </div>
+            </aside>
+        </div>
+    </div>
+
+    <!-- Settings Modal -->
+    <div id="settingsModal" class="modal">
+        <div class="modal-overlay" onclick="closeSettings()"></div>
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2 class="modal-title">Settings</h2>
+                <button class="modal-close" onclick="closeSettings()" aria-label="Close">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <line x1="18" y1="6" x2="6" y2="18"></line>
+                        <line x1="6" y1="6" x2="18" y2="18"></line>
+                    </svg>
+                </button>
+            </div>
+            <div class="modal-body">
+                <div class="form-group">
+                    <label for="deploymentUrl" class="form-label">Deployment URL</label>
+                    <input 
+                        type="text" 
+                        id="deploymentUrl" 
+                        class="form-input"
+                        value="http://localhost:8000"
+                        placeholder="http://localhost:8000"
+                    >
+                    <p class="form-help">The URL where your Deep Agents API is running</p>
+                </div>
+                <div class="form-group">
+                    <label for="assistantId" class="form-label">Assistant ID</label>
+                    <input 
+                        type="text" 
+                        id="assistantId" 
+                        class="form-input"
+                        value="default"
+                        placeholder="default"
+                    >
+                    <p class="form-help">The ID of the assistant or agent you want to use</p>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-secondary" onclick="closeSettings()">Cancel</button>
+                <button class="btn btn-primary" onclick="saveSettings()">Save</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- File Viewer Modal -->
+    <div id="fileModal" class="modal">
+        <div class="modal-overlay" onclick="closeFileViewer()"></div>
+        <div class="modal-content modal-large">
+            <div class="modal-header">
+                <div class="file-header">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>
+                        <polyline points="14 2 14 8 20 8"></polyline>
+                    </svg>
+                    <h2 id="fileName" class="modal-title">File</h2>
+                </div>
+                <button class="modal-close" onclick="closeFileViewer()" aria-label="Close">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <line x1="18" y1="6" x2="6" y2="18"></line>
+                        <line x1="6" y1="6" x2="18" y2="18"></line>
+                    </svg>
+                </button>
+            </div>
+            <div class="modal-body">
+                <div class="file-toolbar">
+                    <button class="toolbar-btn" onclick="copyFileContent()">
+                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect>
+                            <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path>
+                        </svg>
+                        Copy
+                    </button>
+                </div>
+                <pre id="fileContent" class="file-content"></pre>
+            </div>
+        </div>
+    </div>
+
+    <script src="/static/js/app.js"></script>
+</body>
+</html>

@@ -27,5 +27,7 @@ venv/
 *.png
 *.pdf
 *.m4a
-*.zip
 
+longchain_example/
+longchain_example.backup/
+KoreanLanguageGPT/
